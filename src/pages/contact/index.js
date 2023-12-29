@@ -33,7 +33,7 @@ export const ContactUs = () => {
         "service_v87aoh9", // Correct the service ID
         "template_bs6a30c", // Correct the template ID
         templateParams,
-        "_Cf7e3-L96sK1yO_X" // Correct the user ID
+        // "_Cf7e3-L96sK1yO_X" // Correct the user ID
       )
       .then(
         (result) => {
