@@ -19,28 +19,29 @@ export const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setFormdata({ loading: true });
-
+    setFormdata({ ...formData, loading: true });
+  
     const templateParams = {
       from_name: formData.email,
-      user_name: formData.name,
-      to_name: contactConfig.YOUR_EMAIL,
+      user_name: formData.sankha,
+      to_name: "sankha.softech@gmail.com",
       message: formData.message,
     };
-
+  
     emailjs
       .send(
-        contactConfig.YOUR_SERVICE_ID,
-        contactConfig.YOUR_TEMPLATE_ID,
+        "service_v87aoh9", // Correct the service ID
+        "template_bs6a30c", // Correct the template ID
         templateParams,
-        contactConfig.YOUR_USER_ID
+        "_Cf7e3-L96sK1yO_X" // Correct the user ID
       )
       .then(
         (result) => {
           console.log(result.text);
           setFormdata({
+            ...formData,
             loading: false,
-            alertmessage: "SUCCESS! , Looking forward to reading your email.",
+            alertmessage: "SUCCESS! Looking forward to reading your email.",
             variant: "success",
             show: true,
           });
@@ -48,7 +49,8 @@ export const ContactUs = () => {
         (error) => {
           console.log(error.text);
           setFormdata({
-            alertmessage: `Failed to send!,${error.text}`,
+            ...formData,
+            alertmessage: `Failed to send! ${error.text}`,
             variant: "danger",
             show: true,
           });
@@ -56,6 +58,7 @@ export const ContactUs = () => {
         }
       );
   };
+  
 
   const handleChange = (e) => {
     setFormdata({
@@ -81,12 +84,12 @@ export const ContactUs = () => {
         <Row className="sec_sp">
           <Col lg="12">
             <Alert
-              //show={formData.show}
+              show={formData.show}
               variant={formData.variant}
               className={`rounded-0 co_alert ${
                 formData.show ? "d-block" : "d-none"
               }`}
-              onClose={() => setFormdata({ show: false })}
+              onClose={() => setFormdata({ ...formData, show: false })}
               dismissible
             >
               <p className="my-0">{formData.alertmessage}</p>
