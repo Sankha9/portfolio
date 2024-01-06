@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import * as emailjs from "emailjs-com";
 import "./style.css";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -17,23 +17,61 @@ export const ContactUs = () => {
     variant: "",
   });
 
+ 
+   useEffect(() => {
+    const lastSentTime = localStorage.getItem("lastSentTime");
+    if (lastSentTime) {
+      const lastSentDate = new Date(parseInt(lastSentTime));
+      const currentDate = new Date();
+
+      // Check if 24 hours have passed since the last sent email
+      if (currentDate - lastSentDate < 24 * 60 * 60 * 1000) {
+        setFormdata({
+          ...formData,
+          alertmessage: "You can only send one email per day.",
+          variant: "warning",
+          show: true,
+        });
+      }
+    }
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const lastSentTime = localStorage.getItem("lastSentTime");
+
+    if (lastSentTime) {
+      const lastSentDate = new Date(parseInt(lastSentTime));
+      const currentDate = new Date();
+
+      // Check if 24 hours have passed since the last sent email
+      if (currentDate - lastSentDate < 24 * 60 * 60 * 1000) {
+        setFormdata({
+          ...formData,
+          alertmessage: "You can only send one email per day.",
+          variant: "warning",
+          show: true,
+        });
+        return;
+      }
+    }
+
     setFormdata({ ...formData, loading: true });
-  
+
     const templateParams = {
       from_name: formData.email,
       user_name: formData.sankha,
       to_name: "sankha.softech@gmail.com",
       message: formData.message,
     };
-  
+
     emailjs
       .send(
         "service_v87aoh9", // Correct the service ID
         "template_bs6a30c", // Correct the template ID
         templateParams,
-        // "_Cf7e3-L96sK1yO_X" // Correct the user ID
+        "_Cf7e3-L96sK1yO_X" // Correct the user ID
       )
       .then(
         (result) => {
@@ -45,6 +83,9 @@ export const ContactUs = () => {
             variant: "success",
             show: true,
           });
+
+          // Update last sent time in local storage
+          localStorage.setItem("lastSentTime", new Date().getTime());
         },
         (error) => {
           console.log(error.text);
@@ -58,7 +99,6 @@ export const ContactUs = () => {
         }
       );
   };
-  
 
   const handleChange = (e) => {
     setFormdata({
